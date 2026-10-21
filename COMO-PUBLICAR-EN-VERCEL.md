@@ -66,11 +66,7 @@ Se añaden en **Settings → Environment Variables**, marcando *Production* y *P
 
 ## 5. Imagen al compartir en LinkedIn y WhatsApp
 
-Cuando tengas la dirección definitiva, cambia el `content` de la etiqueta `og:image` por la dirección completa. Está en `index.html` y en `diagnostico.html`. Por ejemplo:
-
-`https://autoria.es/assets/img/og-autoria.jpg`
-
-Si no lo cambias, algunas redes no muestran la imagen.
+Ya está configurada con la dirección `https://web-autoria.vercel.app`. Si más adelante conectas un dominio propio, cambia esa dirección en las etiquetas `og:image`, `og:url` y `canonical` de `index.html` y `diagnostico.html` (o pídemelo).
 
 ## 6. Huecos por rellenar
 
