@@ -56,18 +56,10 @@
       a.addEventListener("click", () => setMotivo("Reservar una llamada"));
     });
 
-    $$("[data-plan-cta]").forEach((a) => {
-      a.addEventListener("click", () => {
-        setMotivo("Contratar un plan");
-        const msg = $("#c-msg");
-        if (msg && !msg.value.trim()) msg.value = "Me interesa el plan " + a.dataset.planCta + ".";
-      });
-    });
-
     const params = new URLSearchParams(location.search);
     if (params.get("motivo") === "llamada") setMotivo("Reservar una llamada");
     if (params.get("plan")) {
-      setMotivo("Contratar un plan");
+      setMotivo("Quiero empezar");
       const msg = $("#c-msg");
       if (msg && !msg.value.trim()) msg.value = "Me interesa el plan " + params.get("plan") + ".";
     }
@@ -309,7 +301,7 @@
     });
   }
 
-  /* ---------- precios: España / Costa Rica ---------- */
+  /* ---------- país (España / Costa Rica) y números animados ---------- */
   function detectCountry() {
     const saved = store.get("autoria-pais");
     if (saved === "ES" || saved === "CR") return saved;
@@ -331,41 +323,6 @@
     requestAnimationFrame(step);
   }
   window.__AUTORIA__.tweenNumber = tweenNumber;
-
-  function initPricing() {
-    const sw = $("[data-country-switch]");
-    if (!sw || !data.precios) return;
-    function apply(country, animate) {
-      const p = data.precios[country];
-      if (!p) return;
-      sw.dataset.active = country;
-      $$("[data-country]", sw).forEach((b) => b.setAttribute("aria-checked", String(b.dataset.country === country)));
-      const set = (key, val) => $$('[data-price="' + key + '"]').forEach((el) => animate ? tweenNumber(el, val) : (el.textContent = val.toLocaleString("es-ES")));
-      set("arranque", p.arranque.importe);
-      set("esencial", p.cuota.esencial);
-      set("recomendado", p.cuota.recomendado);
-      set("completo", p.cuota.completo);
-      $$("[data-currency]").forEach((el) => { el.textContent = p.moneda; });
-      $$("[data-cuota-nota]").forEach((el) => { el.textContent = country === "ES" ? "/mes + IVA" : "/mes"; });
-      $$("[data-arranque-nota]").forEach((el) => { el.textContent = p.arranque.nota; });
-      $$("[data-precio-pie]").forEach((el) => { el.textContent = p.pie; });
-      const pais = $("#c-pais");
-      if (pais && !pais.dataset.touched) pais.value = country === "CR" ? "Costa Rica" : "España";
-    }
-    $$("[data-country]", sw).forEach((b) => b.addEventListener("click", () => {
-      store.set("autoria-pais", b.dataset.country);
-      apply(b.dataset.country, true);
-    }));
-    sw.addEventListener("keydown", (e) => {
-      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
-      const next = sw.dataset.active === "ES" ? "CR" : "ES";
-      store.set("autoria-pais", next); apply(next, true);
-      const b = $('[data-country="' + next + '"]', sw); if (b) b.focus();
-    });
-    const pais = $("#c-pais");
-    if (pais) pais.addEventListener("change", () => { pais.dataset.touched = "1"; });
-    apply(detectCountry(), false);
-  }
 
   /* ---------- formulario de contacto ---------- */
   function initContactForm() {
@@ -607,7 +564,6 @@
     safe(initMenu, "menu");
     safe(initTimecode, "timecode");
     safe(initMarquee, "marquee");
-    safe(initPricing, "pricing");
     safe(initContactForm, "contactForm");
     safe(initAsistente, "asistente");
     safe(initGsap, "gsap");
