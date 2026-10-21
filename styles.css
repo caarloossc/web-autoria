@@ -1139,7 +1139,7 @@ body::before {
 .r-idea p { font-size: .85rem; color: var(--ink-mute); }
 .r-plan { display: grid; gap: 1.2rem; }
 @media (min-width: 720px) { .r-plan { grid-template-columns: 1fr 1fr; align-items: center; } }
-.r-plan-name { font-family: var(--serif); font-size: 2.4rem; line-height: 1; }
+.r-plan-name { font-family: var(--serif); font-size: clamp(1.7rem, 1.2rem + 2vw, 2.4rem); line-height: 1.1; padding-left: .3em; }
 .r-plan-name .mark { padding: 0 .15em; }
 .r-plan-price { margin-top: .4rem; font-size: .95rem; color: var(--ink-soft); }
 .r-plan-calc { padding: 1rem 1.1rem; background: var(--paper-2); border-radius: 4px; font-size: .92rem; line-height: 1.55; }

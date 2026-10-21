@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Diagnóstico gratis de marca personal en LinkedIn · Autoría</title>
-  <meta name="description" content="Sube tu perfil de LinkedIn, responde cuatro preguntas y recibe un diagnóstico orientativo de tu marca personal: puntos fuertes y débiles, un titular nuevo, tres ideas de vídeo y el plan que te recomendamos.">
+  <meta name="description" content="Sube tu perfil de LinkedIn, responde cuatro preguntas y recibe un diagnóstico orientativo de tu marca personal: puntos fuertes y débiles, un titular nuevo, tres ideas de vídeo y el ritmo de publicación que te recomendamos.">
   <meta name="theme-color" content="#F5F2EB">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_ES">
@@ -20,7 +20,7 @@
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/instrument-sans.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20261021">
+  <link rel="stylesheet" href="styles.css?v=20261021b">
   <script>document.documentElement.className += " js";</script>
 </head>
 <body class="page-diag">
@@ -51,7 +51,7 @@
           <li><span>1</span>Sube el PDF de tu perfil de LinkedIn o una captura. Leemos tu titular, cargo, sector, experiencia y extracto.</li>
           <li><span>2</span>Responde cuatro preguntas rápidas: objetivo, público, cuánto publicas y cuánto tiempo tienes.</li>
           <li><span>3</span>Calcula cuántas horas al mes te costaría hacerlo por tu cuenta y cuánto vale ese tiempo.</li>
-          <li><span>4</span>Recibe tus puntos fuertes y débiles, un titular nuevo, tres ideas de vídeo y el plan que te recomendamos.</li>
+          <li><span>4</span>Recibe tus puntos fuertes y débiles, un titular nuevo, tres ideas de vídeo y el ritmo de publicación que te recomendamos.</li>
         </ol>
         <p class="dg-disclaimer">Es orientativo: no sustituye una conversación con nosotros ni garantiza resultados. Tu documento solo se usa para leer los datos y no se guarda.</p>
         <div class="dg-nav">
@@ -199,7 +199,7 @@
       <section class="dg-step" data-step="calculo" aria-labelledby="t-calc">
         <div class="dg-eyebrow"><span class="folio-num">6/6</span><span class="kicker">La cuenta</span></div>
         <h2 class="dg-title" id="t-calc">¿Cuánto te costaría hacerlo <em>por tu cuenta</em>?</h2>
-        <p class="dg-lede">Las horas al mes que te llevaría producir por tu cuenta lo que incluye el plan, y cuánto vale ese tiempo según tu tarifa.</p>
+        <p class="dg-lede">Las horas al mes que te llevaría producir por tu cuenta el ritmo de publicación que te recomendamos, y cuánto vale ese tiempo según tu tarifa.</p>
 
         <div class="calc">
           <div class="calc-panel">
@@ -218,12 +218,12 @@
               </div>
             </div>
             <div class="calc-row">
-              <span class="calc-label"><span>Plan</span><span data-reco-label></span></span>
-              <div class="seg" data-calc-plan>
-                <button type="button" data-plan="esencial" aria-pressed="false">Esencial</button>
-                <button type="button" data-plan="recomendado" aria-pressed="true">Recomendado</button>
-                <button type="button" data-plan="completo" aria-pressed="false">Completo</button>
+              <span class="calc-label"><span>Ritmo de publicación al mes</span><span data-reco-label></span></span>
+              <div class="assume">
+                <div class="field"><label for="calc-videos">Vídeos al mes</label><input id="calc-videos" type="number" min="1" max="30" step="1" value="6" data-videos></div>
+                <div class="field"><label for="calc-posts">Posts al mes</label><input id="calc-posts" type="number" min="0" max="30" step="1" value="3" data-posts></div>
               </div>
+              <p class="assume-note" data-ritmo-note>★ Es el ritmo que te recomendamos según tus respuestas. Puedes cambiarlo.</p>
             </div>
             <div class="calc-row">
               <span class="calc-label">Lo que suponemos</span>
@@ -241,11 +241,11 @@
               <div class="calc-fig is-accent"><small>Valor de tu tiempo</small><strong data-out-value>0</strong><span data-out-value-unit>€ al mes</span></div>
             </div>
             <div class="bars">
-              <div class="bar-row"><div class="bar-head"><span>Tu tiempo, a tu tarifa</span><b data-out-bar1>0</b></div><div class="bar bar-accent"><i data-bar1></i></div></div>
-              <div class="bar-row"><div class="bar-head"><span data-out-plan-name>Cuota del plan</span><b data-out-bar2>0</b></div><div class="bar"><i data-bar2></i></div></div>
+              <div class="bar-row"><div class="bar-head"><span>Vídeos</span><b data-out-bar1>0</b></div><div class="bar bar-accent"><i data-bar1></i></div></div>
+              <div class="bar-row"><div class="bar-head"><span>Posts</span><b data-out-bar2>0</b></div><div class="bar"><i data-bar2></i></div></div>
             </div>
             <p class="calc-verdict" data-verdict></p>
-            <p class="calc-small">Con Autoría, tu parte es grabar con la guía y aprobar guiones y cortes. Estimación orientativa.</p>
+            <p class="calc-small">Con Autoría, tu parte es grabar con la guía y aprobar guiones y cortes; el resto lo hacemos nosotros. Estimación orientativa.</p>
           </div>
         </div>
 
@@ -295,7 +295,7 @@
       <header class="asistente-head">
         <div>
           <p class="asistente-title" id="asistente-title">El asistente de Autoría</p>
-          <p class="asistente-sub">Marca personal, método, planes y precios</p>
+          <p class="asistente-sub">Marca personal, método y diagnóstico</p>
         </div>
         <button class="asistente-close" type="button" aria-label="Cerrar el asistente" data-asistente-close>×</button>
       </header>
@@ -303,7 +303,7 @@
       <div class="asistente-chips" data-asistente-chips>
         <button type="button">¿Cómo descargo mi perfil en PDF?</button>
         <button type="button">¿Qué hacéis con mis datos?</button>
-        <button type="button">¿Qué incluye cada plan?</button>
+        <button type="button">¿Qué pasa después del diagnóstico?</button>
       </div>
       <form class="asistente-form" novalidate data-asistente-form>
         <label class="consent consent-mini" data-asistente-consent><input type="checkbox" name="consent" value="1"><span>Acepto la <a href="privacidad.html" target="_blank" rel="noopener">política de privacidad</a>. No compartas datos sensibles.</span></label>
@@ -316,8 +316,8 @@
     </section>
   </div>
 
-  <script defer src="lib/manifest.js?v=20261021"></script>
-  <script defer src="main.js?v=20261021"></script>
-  <script defer src="lib/diagnostico.js?v=20261021"></script>
+  <script defer src="lib/manifest.js?v=20261021b"></script>
+  <script defer src="main.js?v=20261021b"></script>
+  <script defer src="lib/diagnostico.js?v=20261021b"></script>
 </body>
 </html>

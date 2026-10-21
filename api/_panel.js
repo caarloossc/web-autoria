@@ -92,7 +92,7 @@ function listPage(rows) {
       det += `<dt>Cargo · empresa · sector</dt><dd>${esc([p.cargo_actual, p.empresa_actual, p.sector].filter(Boolean).join(" · ") || "—")}</dd>`;
       det += `<dt>Objetivo · público</dt><dd>${esc((q.objetivo || "—") + " · " + (q.publico || "—"))}</dd>`;
       det += `<dt>Publica hoy · tiempo · cámara</dt><dd>${esc((q.frecuencia || "—") + " · " + (q.tiempo || "—") + " · " + (q.camara || "—"))}</dd>`;
-      det += `<dt>Calculadora</dt><dd>${esc((c.horasMes ?? "—") + " h/mes · " + (c.valorMes ?? "—") + " " + (c.moneda || "") + " (tarifa " + (c.tarifa ?? "—") + "/h) frente a cuota " + (c.cuota ?? "—"))}</dd>`;
+      det += `<dt>Ritmo recomendado · calculadora</dt><dd>${esc((r.ritmo || r.plan || "—") + " · por su cuenta: " + (c.horasMes ?? "—") + " h/mes, " + (c.valorMes ?? "—") + " " + (c.moneda || "") + " (tarifa " + (c.tarifa ?? "—") + "/h)")}</dd>`;
       if (res) {
         det += `<dt>Resumen</dt><dd>${esc(res.resumen)}</dd><dt>Titular propuesto</dt><dd>${esc(res.titular_propuesto)}</dd>`;
         det += `<dt>Ideas de vídeo</dt><dd>${(res.ideas_video || []).map((i) => esc("«" + i.formato + "» " + i.titulo + " — " + i.gancho)).join("\n")}</dd>`;
@@ -105,7 +105,7 @@ function listPage(rows) {
       <span class="meta">${esc(fecha(r.fecha))}</span>
       <span><span class="tag ${isD ? "d" : ""}">${isD ? "Diagnóstico" : "Contacto"}</span></span>
       <span class="who"><strong>${esc(r.nombre || "—")}</strong><span class="meta">${esc(r.email || "")}${r.telefono ? " · " + esc(r.telefono) : ""}</span></span>
-      <span class="meta">${esc(isD ? "Plan " + (r.plan || "") : (r.motivo || ""))}</span>
+      <span class="meta">${esc(isD ? (r.ritmo || (r.plan ? "Plan " + r.plan : "")) : (r.motivo || ""))}</span>
     </summary><dl class="detail">${det}</dl></details>`;
   }).join("");
   return layout(`<div class="bar"><div><h1>Autoría<span>.</span> Panel</h1><p class="meta">${rows.length} registros · los más recientes primero</p></div>
@@ -116,10 +116,10 @@ function listPage(rows) {
 
 function csv(rows) {
   const cell = (v) => '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"';
-  const head = ["fecha", "tipo", "nombre", "email", "telefono", "pais", "motivo/objetivo", "cargo", "plan", "indice", "mensaje/publico", "titular propuesto"];
+  const head = ["fecha", "tipo", "nombre", "email", "telefono", "pais", "motivo/objetivo", "cargo", "ritmo recomendado", "indice", "mensaje/publico", "titular propuesto"];
   const lines = rows.map((r) => [
     r.fecha, r.tipo, r.nombre, r.email, r.telefono, r.pais, r.motivo || (r.respuestas || {}).objetivo,
-    r.cargo || (r.perfil || {}).cargo_actual, r.plan, r.indice, r.mensaje || (r.respuestas || {}).publico, (r.resultado || {}).titular_propuesto
+    r.cargo || (r.perfil || {}).cargo_actual, r.ritmo || r.plan, r.indice, r.mensaje || (r.respuestas || {}).publico, (r.resultado || {}).titular_propuesto
   ].map(cell).join(";"));
   return "﻿" + [head.map(cell).join(";")].concat(lines).join("\r\n");
 }
