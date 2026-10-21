@@ -1,0 +1,9 @@
+{
+  "name": "autoria-web",
+  "private": true,
+  "description": "Web de Autoría: estática + funciones de Vercel (asistente, diagnóstico, contacto y panel).",
+  "type": "module",
+  "scripts": {
+    "dev": "node tools/dev-server.mjs"
+  }
+}

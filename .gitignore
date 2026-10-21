@@ -1,0 +1,11 @@
+# Ajustes locales del editor y de las pruebas (no forman parte de la web)
+.claude/
+node_modules/
+.vercel/
+.env*
+*.log
+datos/
+
+# Copias de prueba del repositorio (no forman parte de la web)
+/Web Autoría/
+/web-autoria/
