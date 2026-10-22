@@ -31,8 +31,7 @@ $resp = [
 ];
 $ci = is_array($in['calculo'] ?? null) ? $in['calculo'] : [];
 $calculo = [];
-foreach (['tarifa', 'horasVideo', 'horasPost', 'videos', 'posts', 'horasMes', 'valorMes'] as $k) $calculo[$k] = is_numeric($ci[$k] ?? null) ? round((float) $ci[$k], 2) : null;
-$calculo['moneda'] = clean_str($ci['moneda'] ?? '', 4);
+foreach (['horasVideo', 'horasPost', 'videos', 'posts', 'horasMes', 'jornadas'] as $k) $calculo[$k] = is_numeric($ci[$k] ?? null) ? round((float) $ci[$k], 2) : null;
 $rr = is_array($in['ritmo'] ?? null) ? $in['ritmo'] : [];
 $entero = function ($v, $min, $max, $def) { $n = is_numeric($v) ? (int) round((float) $v) : null; return ($n !== null && $n >= $min && $n <= $max) ? $n : $def; };
 $ritmo = ['videos' => $entero($rr['videos'] ?? null, 1, 30, 6), 'posts' => $entero($rr['posts'] ?? null, 0, 30, 3)];

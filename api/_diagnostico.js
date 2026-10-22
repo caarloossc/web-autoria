@@ -63,8 +63,7 @@ export async function POST(request) {
   };
   const ci = input.calculo && typeof input.calculo === "object" ? input.calculo : {};
   const calculo = {};
-  for (const k of ["tarifa", "horasVideo", "horasPost", "videos", "posts", "horasMes", "valorMes"]) calculo[k] = Number.isFinite(Number(ci[k])) ? Math.round(Number(ci[k]) * 100) / 100 : null;
-  calculo.moneda = cleanStr(ci.moneda, 4);
+  for (const k of ["horasVideo", "horasPost", "videos", "posts", "horasMes", "jornadas"]) calculo[k] = Number.isFinite(Number(ci[k])) ? Math.round(Number(ci[k]) * 100) / 100 : null;
   const ri2 = input.ritmo && typeof input.ritmo === "object" ? input.ritmo : {};
   const entero = (v, min, max, def) => { const n = Math.round(Number(v)); return Number.isFinite(n) && n >= min && n <= max ? n : def; };
   const ritmo = { videos: entero(ri2.videos, 1, 30, 6), posts: entero(ri2.posts, 0, 30, 3) };

@@ -125,7 +125,7 @@ function fecha_es($iso) {
           <dt>Cargo · empresa · sector</dt><dd><?php echo $e(implode(' · ', array_filter([$p['cargo_actual'] ?? '', $p['empresa_actual'] ?? '', $p['sector'] ?? ''])) ?: '—'); ?></dd>
           <dt>Objetivo · público</dt><dd><?php echo $e(($q['objetivo'] ?? '—') . ' · ' . ($q['publico'] ?? '—')); ?></dd>
           <dt>Publica hoy · tiempo · cámara</dt><dd><?php echo $e(($q['frecuencia'] ?? '—') . ' · ' . ($q['tiempo'] ?? '—') . ' · ' . ($q['camara'] ?? '—')); ?></dd>
-          <dt>Ritmo recomendado · calculadora</dt><dd><?php echo $e(($r['ritmo'] ?? '—') . ' · por su cuenta: ' . ($c['horasMes'] ?? '—') . ' h/mes, ' . ($c['valorMes'] ?? '—') . ' ' . ($c['moneda'] ?? '') . ' (tarifa ' . ($c['tarifa'] ?? '—') . '/h)'); ?></dd>
+          <dt>Ritmo recomendado · calculadora</dt><dd><?php echo $e(($r['ritmo'] ?? '—') . ' · por su cuenta: ' . ($c['horasMes'] ?? '—') . ' h/mes' . (isset($c['jornadas']) ? ' (unas ' . $c['jornadas'] . ' jornadas)' : '')); ?></dd>
           <?php if ($res): ?>
             <dt>Resumen</dt><dd><?php echo $e($res['resumen'] ?? ''); ?></dd>
             <?php if (!empty($res['redes'])): ?><dt>Redes recomendadas</dt><dd><?php echo $e(implode(', ', $res['redes']) . (!empty($res['redes_por_que']) ? ' — ' . $res['redes_por_que'] : '')); ?></dd><?php endif; ?>

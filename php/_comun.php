@@ -151,6 +151,8 @@ function gemini_call(array $models, array $payload, $timeoutMs = 25000, $deadlin
   $key = gemini_key();
   if ($key === '') return ['', 'sin_clave'];
   if (!function_exists('curl_init')) return ['', 'sin_curl'];
+  // Que PHP no corte la petición (30 s por defecto) antes del plazo propio.
+  @set_time_limit((int) ceil($deadlineMs / 1000) + 15);
   $start = microtime(true);
   $lastErr = '';
   foreach ($models as $model) {

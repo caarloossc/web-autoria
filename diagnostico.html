@@ -20,7 +20,7 @@
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/fonts/instrument-sans.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=20261022a">
+  <link rel="stylesheet" href="styles.css?v=20261022b">
   <script>document.documentElement.className += " js";</script>
 </head>
 <body class="page-diag">
@@ -50,7 +50,7 @@
         <ol class="dg-intro-list">
           <li><span>1</span>Sube capturas de tu perfil en la red que más uses (LinkedIn, Instagram, YouTube, TikTok…) o el PDF de LinkedIn. Leemos tu bio, cargo, sector, experiencia y presentación.</li>
           <li><span>2</span>Responde cuatro preguntas rápidas: objetivo, público, cuánto publicas y cuánto tiempo tienes.</li>
-          <li><span>3</span>Calcula cuántas horas al mes te costaría hacerlo por tu cuenta y cuánto vale ese tiempo.</li>
+          <li><span>3</span>Calcula cuántas horas al mes te llevaría hacerlo por tu cuenta.</li>
           <li><span>4</span>Recibe tus puntos fuertes y débiles, una bio nueva, las redes en las que centrarte, tres ideas de vídeo y el ritmo de publicación que te recomendamos.</li>
         </ol>
         <p class="dg-disclaimer">Es orientativo: no sustituye una conversación con nosotros ni garantiza resultados. Tu documento solo se usa para leer los datos y no se guarda.</p>
@@ -200,23 +200,16 @@
       <!-- ============ 6 · CALCULADORA ============ -->
       <section class="dg-step" data-step="calculo" aria-labelledby="t-calc">
         <div class="dg-eyebrow"><span class="folio-num">6/6</span><span class="kicker">La cuenta</span></div>
-        <h2 class="dg-title" id="t-calc">¿Cuánto te costaría hacerlo <em>por tu cuenta</em>?</h2>
-        <p class="dg-lede">Las horas al mes que te llevaría producir por tu cuenta el ritmo de publicación que te recomendamos, y cuánto vale ese tiempo según tu tarifa.</p>
+        <h2 class="dg-title" id="t-calc">¿Cuánto tiempo te llevaría hacerlo <em>por tu cuenta</em>?</h2>
+        <p class="dg-lede">Las horas al mes que te llevaría producir por tu cuenta el ritmo de publicación que te recomendamos.</p>
 
         <div class="calc">
           <div class="calc-panel">
             <div class="calc-row">
               <span class="calc-label">País</span>
               <div class="seg" data-calc-country>
-                <button type="button" data-country="ES" aria-pressed="true">España · €</button>
-                <button type="button" data-country="CR" aria-pressed="false">Costa Rica · USD</button>
-              </div>
-            </div>
-            <div class="calc-row">
-              <label class="calc-label" for="calc-rate"><span>Tu tarifa por hora</span><span data-rate-note>€/h</span></label>
-              <div class="rate">
-                <input type="range" id="calc-rate" min="30" max="400" step="5" value="100" data-rate-range>
-                <span class="rate-box"><input type="number" min="1" max="2000" step="5" value="100" aria-label="Tarifa por hora" data-rate-num><span data-rate-unit>€/h</span></span>
+                <button type="button" data-country="ES" aria-pressed="true">España</button>
+                <button type="button" data-country="CR" aria-pressed="false">Costa Rica</button>
               </div>
             </div>
             <div class="calc-row">
@@ -240,7 +233,7 @@
           <div class="calc-out" aria-live="polite">
             <div class="calc-figs">
               <div class="calc-fig"><small>Horas al mes</small><strong data-out-hours>0</strong><span data-out-hours-detail></span></div>
-              <div class="calc-fig is-accent"><small>Valor de tu tiempo</small><strong data-out-value>0</strong><span data-out-value-unit>€ al mes</span></div>
+              <div class="calc-fig is-accent"><small>Jornadas de trabajo</small><strong data-out-days>0</strong><span>de 8 horas, cada mes</span></div>
             </div>
             <div class="bars">
               <div class="bar-row"><div class="bar-head"><span>Vídeos</span><b data-out-bar1>0</b></div><div class="bar bar-accent"><i data-bar1></i></div></div>
@@ -318,8 +311,8 @@
     </section>
   </div>
 
-  <script defer src="lib/manifest.js?v=20261022a"></script>
-  <script defer src="main.js?v=20261022a"></script>
-  <script defer src="lib/diagnostico.js?v=20261022a"></script>
+  <script defer src="lib/manifest.js?v=20261022b"></script>
+  <script defer src="main.js?v=20261022b"></script>
+  <script defer src="lib/diagnostico.js?v=20261022b"></script>
 </body>
 </html>
