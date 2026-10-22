@@ -118,6 +118,10 @@ function texto_js($archivo, $nombre) {
 function rate_limit($bucket, $perMin, $perDay, $globalDay) {
   $tmp = sys_get_temp_dir();
   $now = time();
+  // De vez en cuando, borra los contadores de más de 24 horas (la política de privacidad lo promete).
+  if (mt_rand(1, 50) === 1) {
+    foreach ((array) glob("$tmp/autoria_*") as $f) { if (@filemtime($f) < $now - 86400) @unlink($f); }
+  }
   $h = substr(hash('sha256', 'autoria:' . ($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0')), 0, 24);
   $fIp = "$tmp/autoria_{$bucket}_$h.json";
   $stamps = is_file($fIp) ? json_decode((string) @file_get_contents($fIp), true) : [];
