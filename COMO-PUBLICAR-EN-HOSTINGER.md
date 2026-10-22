@@ -14,7 +14,7 @@ Las direcciones son las mismas que en Vercel:
 
 En el hPanel actual, estas opciones no están en el menú general, sino **dentro del panel de cada sitio**:
 
-- Entra en **Sitios web** y pulsa **Panel** (en algunas cuentas, **Administrar**; en inglés, *Dashboard*) junto al sitio.
+- Entra en **Sitios web** y abre el sitio: pulsa en su fila o en el botón **⋮** de la derecha. No pulses en el nombre con la flechita, porque eso abre la web. En algunas cuentas hay un botón **Panel** o **Administrar** (en inglés, *Dashboard*).
 - A la izquierda aparece una barra lateral con un **buscador**. Escribe «PHP», «SSL» o «Git» y te lleva a cada opción.
 
 **Antes de nada: dónde va Autoría.** Si en el plan ya está la web de la empresa, **no uses su carpeta**: la borrarías. Elige una de estas dos opciones:
