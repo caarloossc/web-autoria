@@ -1,9 +1,10 @@
-// /api/lector-perfil — lee con IA el PDF del perfil de LinkedIn (o capturas)
-// y devuelve los datos en JSON. Lo que no aparece en el documento vuelve
-// vacío: nunca se inventa. El documento no se guarda.
+// /api/lector-perfil — lee con IA las capturas del perfil en cualquier red social
+// (o el PDF de LinkedIn) y devuelve los datos en JSON. Lo que no aparece en el
+// documento vuelve vacío: nunca se inventa. El documento no se guarda.
 import { json, sameOrigin, rateLimit, geminiKey, geminiCall, extractJson, strOrNull, MODELOS_LECTURA } from "./_comun.js";
 
 const fail = (reason, status = 200) => json({ ok: false, reason }, status);
+const REDES = ["LinkedIn", "Instagram", "TikTok", "YouTube", "X", "Facebook", "Otra"];
 const MAX_TOTAL = 4 * 1024 * 1024; // Vercel admite hasta 4,5 MB por petición
 
 // Tipo real del archivo según sus primeros bytes.
@@ -17,10 +18,11 @@ function sniff(buf) {
   return "";
 }
 
-const INSTR = `Eres un extractor de datos de perfiles de LinkedIn. Recibes el PDF que LinkedIn genera desde un perfil («Guardar en PDF») o una o varias capturas de pantalla de un perfil. Devuelve EXCLUSIVAMENTE un objeto JSON válido, sin texto adicional, con EXACTAMENTE estas claves:
+const INSTR = `Eres un extractor de datos de perfiles profesionales en redes sociales (LinkedIn, Instagram, TikTok, YouTube, X, Facebook u otras). Recibes el PDF que LinkedIn genera desde un perfil («Guardar en PDF») o una o varias capturas de pantalla de un perfil de cualquier red. Devuelve EXCLUSIVAMENTE un objeto JSON válido, sin texto adicional, con EXACTAMENTE estas claves:
 
 {
   "es_perfil": true o false,
+  "red": "LinkedIn" | "Instagram" | "TikTok" | "YouTube" | "X" | "Facebook" | "Otra" | null,
   "nombre": string o null,
   "titular": string o null,
   "cargo_actual": string o null,
@@ -36,14 +38,16 @@ const INSTR = `Eres un extractor de datos de perfiles de LinkedIn. Recibes el PD
 Reglas estrictas:
 - Copia los textos tal y como aparecen en el documento, en su idioma original. No los reescribas, no los resumas, no los mejores ni corrijas.
 - Si un dato NO aparece de forma explícita en el documento, pon null (o [] en las listas). No lo deduzcas, no lo supongas, no lo inventes.
-- "titular": la línea descriptiva que aparece bajo el nombre.
-- "cargo_actual" y "empresa_actual": los del puesto más reciente que figure como actual. Si no hay puesto actual explícito, null.
+- "red": la red social a la que pertenece el perfil, según su aspecto o lo que se lea en él. El PDF de «Guardar en PDF» es de LinkedIn. Si no se puede saber con seguridad, null.
+- "titular": en LinkedIn, la línea descriptiva que aparece bajo el nombre; en otras redes, la bio o descripción corta del perfil.
+- "cargo_actual" y "empresa_actual": los del puesto más reciente que figure como actual, o los que el perfil indique expresamente. Si no aparecen de forma explícita, null.
 - "sector": solo si el documento indica expresamente un sector o industria. Si no lo indica, null.
-- "extracto": el texto completo de la sección «Extracto» o «Acerca de» (máximo 2000 caracteres). Si no existe, null.
+- "extracto": el texto completo de la sección «Extracto» o «Acerca de», o la descripción larga del perfil o del canal (máximo 2000 caracteres). Si no existe, null.
 - "experiencia": hasta 8 puestos, del más reciente al más antiguo, con el periodo tal y como aparece.
 - "anos_experiencia": solo si el propio documento indica duraciones o fechas suficientes para calcularlo con seguridad; si no, null.
 - "aptitudes": hasta 10, solo si aparecen en una sección de aptitudes.
-- "es_perfil": false si el documento no parece un perfil profesional de LinkedIn.`;
+- No copies cifras de seguidores, visualizaciones ni publicaciones.
+- "es_perfil": false si el documento no parece el perfil de una persona o profesional en una red social.`;
 
 export async function POST(request) {
   if (!sameOrigin(request)) return fail("origin", 403);
@@ -87,6 +91,7 @@ export async function POST(request) {
 
   return json({ ok: true, data: {
     es_perfil: p.es_perfil !== false,
+    red: REDES.includes(p.red) ? p.red : null,
     nombre: strOrNull(p.nombre, 120),
     titular: strOrNull(p.titular, 300),
     cargo_actual: strOrNull(p.cargo_actual, 160),

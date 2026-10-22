@@ -1109,6 +1109,8 @@ body::before {
 .r-headline-new { margin-top: .9rem; font-family: var(--serif); font-weight: 400; font-size: clamp(1.4rem, 1.1rem + 1.2vw, 2rem); line-height: 1.22; letter-spacing: -0.01em; }
 .r-why { margin-top: .7rem; font-size: .92rem; color: var(--ink-soft); }
 .r-copy { margin-top: .9rem; font-size: .85rem; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.r-redes { display: flex; flex-wrap: wrap; gap: .5rem; }
+.r-redes span { font-family: var(--serif); font-size: clamp(1.25rem, 1.05rem + .8vw, 1.6rem); line-height: 1; padding: .45rem 1rem .5rem; border: 1px solid var(--ink); border-radius: 999px; }
 .r-ideas { display: grid; gap: 1rem; }
 @media (min-width: 720px) { .r-ideas { grid-template-columns: repeat(3, 1fr); } }
 .r-idea { padding: 1.1rem; border: 1px solid var(--line-2); border-radius: 4px; background: #fff; display: grid; gap: .5rem; align-content: start; }

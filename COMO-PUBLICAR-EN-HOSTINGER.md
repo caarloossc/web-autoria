@@ -69,7 +69,7 @@ La clave y la contraseña se guardan en el servidor, en una carpeta privada **ju
 ## 4. Comprobar que todo funciona
 
 1. Pregunta algo al asistente.
-2. Haz un diagnóstico con tu PDF de LinkedIn.
+2. Haz un diagnóstico con capturas de tu perfil en redes o con tu PDF de LinkedIn.
 3. Envía el formulario de contacto.
 4. Entra en `https://tu-dominio/panel`: deben aparecer el diagnóstico y el contacto, y se pueden descargar en Excel.
 

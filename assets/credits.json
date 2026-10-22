@@ -1,46 +1,42 @@
 {
-  "hero-set": {
-    "title": "Camera Studio",
-    "creator": "Kristin Hardwick",
-    "creator_url": "https://www.kristinhardwick.com",
-    "license": "cc0",
-    "license_version": "1.0",
-    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
-    "foreign_landing_url": "https://stocksnap.io/photo/camera-studio-PDNKBKWJFI",
-    "source": "stocksnap",
-    "src": "assets/img/hero-set.webp"
+  "portada": {
+    "title": "Mujer grabándose a sí misma en un teléfono inteligente en la oficina",
+    "creator": "Afffect",
+    "creator_url": "https://unsplash.com/@afffect",
+    "foreign_landing_url": "https://unsplash.com/photos/MyQuDbteFsg",
+    "license": "unsplash",
+    "license_url": "https://unsplash.com/license",
+    "source": "unsplash",
+    "src": "assets/img/portada.webp"
   },
-  "cuaderno": {
-    "title": "Notepad Notebook",
-    "creator": "Dariusz Sankowski",
-    "creator_url": "https://stocksnap.io/author/16700",
-    "license": "cc0",
-    "license_version": "1.0",
-    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
-    "foreign_landing_url": "https://stocksnap.io/photo/notepad-notebook-RMLFV5PVU9",
-    "source": "stocksnap",
-    "src": "assets/img/cuaderno.webp"
+  "problema": {
+    "title": "Hombre sentado en una silla dentro de la habitación",
+    "creator": "Timon Studler",
+    "creator_url": "https://unsplash.com/@derstudi",
+    "foreign_landing_url": "https://unsplash.com/photos/ei9XEwGnk1o",
+    "license": "unsplash",
+    "license_url": "https://unsplash.com/license",
+    "source": "unsplash",
+    "src": "assets/img/problema.webp"
   },
-  "guion": {
-    "title": "Office Work",
-    "creator": "Aaron Burden",
-    "creator_url": "https://instagram.com/aaronburden",
-    "license": "cc0",
-    "license_version": "1.0",
-    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
-    "foreign_landing_url": "https://stocksnap.io/photo/office-work-IMXRJF7SWX",
-    "source": "stocksnap",
-    "src": "assets/img/guion.webp"
+  "servicio": {
+    "title": "Una persona escribiendo en una hoja de papel",
+    "creator": "Peter Olexa",
+    "creator_url": "https://unsplash.com/@deeezyfree",
+    "foreign_landing_url": "https://unsplash.com/photos/VxQ4UR5Dt1k",
+    "license": "unsplash",
+    "license_url": "https://unsplash.com/license",
+    "source": "unsplash",
+    "src": "assets/img/servicio.webp"
   },
-  "microfono": {
-    "title": "Microphone Music",
-    "creator": "Freestocks.org",
-    "creator_url": "https://stocksnap.io/author/20064",
-    "license": "cc0",
-    "license_version": "1.0",
-    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
-    "foreign_landing_url": "https://stocksnap.io/photo/microphone-music-8KQC04JDT0",
-    "source": "stocksnap",
-    "src": "assets/img/microfono.webp"
+  "voz": {
+    "title": "Una mujer de pie frente a una multitud sosteniendo un micrófono",
+    "creator": "Dámaris Azócar",
+    "creator_url": "https://unsplash.com/@az_damariss",
+    "foreign_landing_url": "https://unsplash.com/photos/NK02ShlfWDM",
+    "license": "unsplash",
+    "license_url": "https://unsplash.com/license",
+    "source": "unsplash",
+    "src": "assets/img/voz.webp"
   }
 }

@@ -43,13 +43,13 @@ if ($logged && isset($_GET['csv'])) {
   header('Content-Disposition: attachment; filename="autoria-contactos-' . date('Y-m-d') . '.csv"');
   $out = fopen('php://output', 'w');
   fwrite($out, "\xEF\xBB\xBF");
-  fputcsv($out, ['fecha', 'tipo', 'nombre', 'email', 'telefono', 'pais', 'motivo/objetivo', 'cargo', 'ritmo recomendado', 'indice', 'mensaje/publico', 'titular propuesto'], ';');
+  fputcsv($out, ['fecha', 'tipo', 'nombre', 'email', 'telefono', 'pais', 'motivo/objetivo', 'cargo', 'ritmo recomendado', 'indice', 'mensaje/publico', 'red del perfil', 'redes recomendadas', 'titular o bio propuesto'], ';');
   foreach ($rows as $r) {
     fputcsv($out, [
       $r['fecha'] ?? '', $r['tipo'] ?? '', $r['nombre'] ?? '', $r['email'] ?? '', $r['telefono'] ?? '', $r['pais'] ?? '',
       $r['motivo'] ?? ($r['respuestas']['objetivo'] ?? ''), $r['cargo'] ?? ($r['perfil']['cargo_actual'] ?? ''),
       $r['ritmo'] ?? ($r['plan'] ?? ''), $r['indice'] ?? '', $r['mensaje'] ?? ($r['respuestas']['publico'] ?? ''),
-      $r['resultado']['titular_propuesto'] ?? '',
+      $r['perfil']['red'] ?? '', implode(', ', $r['resultado']['redes'] ?? []), $r['resultado']['titular_propuesto'] ?? '',
     ], ';');
   }
   exit;
@@ -121,14 +121,15 @@ function fecha_es($iso) {
       <dl class="detail">
         <?php if ($isD): ?>
           <dt>País · índice orientativo</dt><dd><?php echo $e(($r['pais'] ?? '') . ' · ' . ($r['indice'] ?? '—') . '/100'); ?></dd>
-          <dt>Titular actual</dt><dd><?php echo $e(($p['titular'] ?? '') ?: '—'); ?></dd>
+          <dt>Red · titular o bio actual</dt><dd><?php echo $e((($p['red'] ?? '') ?: '—') . ' · ' . (($p['titular'] ?? '') ?: '—')); ?></dd>
           <dt>Cargo · empresa · sector</dt><dd><?php echo $e(implode(' · ', array_filter([$p['cargo_actual'] ?? '', $p['empresa_actual'] ?? '', $p['sector'] ?? ''])) ?: '—'); ?></dd>
           <dt>Objetivo · público</dt><dd><?php echo $e(($q['objetivo'] ?? '—') . ' · ' . ($q['publico'] ?? '—')); ?></dd>
           <dt>Publica hoy · tiempo · cámara</dt><dd><?php echo $e(($q['frecuencia'] ?? '—') . ' · ' . ($q['tiempo'] ?? '—') . ' · ' . ($q['camara'] ?? '—')); ?></dd>
           <dt>Ritmo recomendado · calculadora</dt><dd><?php echo $e(($r['ritmo'] ?? '—') . ' · por su cuenta: ' . ($c['horasMes'] ?? '—') . ' h/mes, ' . ($c['valorMes'] ?? '—') . ' ' . ($c['moneda'] ?? '') . ' (tarifa ' . ($c['tarifa'] ?? '—') . '/h)'); ?></dd>
           <?php if ($res): ?>
             <dt>Resumen</dt><dd><?php echo $e($res['resumen'] ?? ''); ?></dd>
-            <dt>Titular propuesto</dt><dd><?php echo $e($res['titular_propuesto'] ?? ''); ?></dd>
+            <?php if (!empty($res['redes'])): ?><dt>Redes recomendadas</dt><dd><?php echo $e(implode(', ', $res['redes']) . (!empty($res['redes_por_que']) ? ' — ' . $res['redes_por_que'] : '')); ?></dd><?php endif; ?>
+            <dt>Titular o bio propuesto</dt><dd><?php echo $e($res['titular_propuesto'] ?? ''); ?></dd>
             <dt>Ideas de vídeo</dt><dd><?php foreach (($res['ideas_video'] ?? []) as $i) echo $e('«' . ($i['formato'] ?? '') . '» ' . ($i['titulo'] ?? '') . ' — ' . ($i['gancho'] ?? '')) . "\n"; ?></dd>
           <?php else: ?>
             <dt>Diagnóstico IA</dt><dd>No se generó. Conviene escribirle personalmente.</dd>

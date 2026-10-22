@@ -22,7 +22,7 @@ $pi = is_array($in['perfil'] ?? null) ? $in['perfil'] : [];
 $perfil = [
   'nombre' => clean_str($pi['nombre'] ?? '', 120), 'titular' => clean_str($pi['titular'] ?? '', 300), 'cargo_actual' => clean_str($pi['cargo_actual'] ?? '', 160),
   'empresa_actual' => clean_str($pi['empresa_actual'] ?? '', 160), 'sector' => clean_str($pi['sector'] ?? '', 120), 'experiencia' => clean_str($pi['experiencia'] ?? '', 1500),
-  'extracto' => clean_str($pi['extracto'] ?? '', 2600), 'origen' => clean_str($pi['origen'] ?? '', 20),
+  'extracto' => clean_str($pi['extracto'] ?? '', 2600), 'red' => clean_str($pi['red'] ?? '', 20), 'origen' => clean_str($pi['origen'] ?? '', 20),
 ];
 $ri = is_array($in['respuestas'] ?? null) ? $in['respuestas'] : [];
 $resp = [
@@ -81,9 +81,10 @@ $res = null;
 if ($r) {
   $list = function ($v, $n, $max) { $o = []; foreach ((is_array($v) ? $v : []) as $x) { $s = clean_str($x, $max); if ($s !== '') $o[] = $s; if (count($o) >= $n) break; } return $o; };
   $ideas = [];
+  $formatos = ['Ideas en 60', 'La conversación', 'Lo que vi'];
   foreach (array_slice(is_array($r['ideas_video'] ?? null) ? $r['ideas_video'] : [], 0, 3) as $i) {
     if (!is_array($i)) continue;
-    $ideas[] = ['formato' => clean_str($i['formato'] ?? '', 40), 'titulo' => clean_str($i['titulo'] ?? '', 140), 'gancho' => clean_str($i['gancho'] ?? '', 220), 'por_que' => clean_str($i['por_que'] ?? '', 260)];
+    $ideas[] = ['formato' => clean_str($i['formato'] ?? '', 40) ?: $formatos[count($ideas)], 'titulo' => clean_str($i['titulo'] ?? '', 140), 'gancho' => clean_str($i['gancho'] ?? '', 220), 'por_que' => clean_str($i['por_que'] ?? '', 260)];
   }
   $res = [
     'resumen' => clean_str($r['resumen'] ?? '', 500),
@@ -92,6 +93,8 @@ if ($r) {
     'titular_propuesto' => clean_str($r['titular_propuesto'] ?? '', 220),
     'titular_por_que' => clean_str($r['titular_por_que'] ?? '', 300),
     'ideas_video' => $ideas,
+    'redes' => $list($r['redes'] ?? [], 2, 30),
+    'redes_por_que' => clean_str($r['redes_por_que'] ?? '', 400),
     'ritmo_por_que' => clean_str($r['ritmo_por_que'] ?? '', 500),
     'primer_paso' => clean_str($r['primer_paso'] ?? '', 300),
   ];

@@ -1,7 +1,8 @@
 <?php
-// lector-perfil.php (se abre como /api/lector-perfil) — lee con IA el PDF del
-// perfil de LinkedIn (o capturas) y devuelve los datos. Lo que no aparece en el
-// documento vuelve vacío: nunca se inventa. El documento no se guarda.
+// lector-perfil.php (se abre como /api/lector-perfil) — lee con IA las capturas
+// del perfil en cualquier red social (o el PDF de LinkedIn) y devuelve los datos.
+// Lo que no aparece en el documento vuelve vacío: nunca se inventa. El documento
+// no se guarda.
 // Equivale a api/_lector-perfil.js.
 define('AUTORIA', 1);
 require __DIR__ . '/_comun.php';
@@ -63,8 +64,11 @@ $apt = [];
 foreach (array_slice(is_array($p['aptitudes'] ?? null) ? $p['aptitudes'] : [], 0, 10) as $a) { $a = str_or_null($a, 60); if ($a !== null) $apt[] = $a; }
 $anos = $p['anos_experiencia'] ?? null;
 
+$redes = ['LinkedIn', 'Instagram', 'TikTok', 'YouTube', 'X', 'Facebook', 'Otra'];
+
 json_out(['ok' => true, 'data' => [
   'es_perfil'        => ($p['es_perfil'] ?? true) !== false,
+  'red'              => in_array($p['red'] ?? null, $redes, true) ? $p['red'] : null,
   'nombre'           => str_or_null($p['nombre'] ?? null, 120),
   'titular'          => str_or_null($p['titular'] ?? null, 300),
   'cargo_actual'     => str_or_null($p['cargo_actual'] ?? null, 160),
