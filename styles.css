@@ -734,27 +734,6 @@ body::before {
   .case-sheet { grid-column: 7 / span 6; }
 }
 
-/* ---------- 08 testimonios ---------- */
-.voices-head { display: grid; gap: 1.2rem; margin-bottom: clamp(2.5rem, 5vw, 4rem); }
-.voices-disclaimer { display: flex; align-items: center; gap: .9rem; font-size: .9rem; color: var(--ink-mute); }
-@media (min-width: 960px) { .voices-head { grid-template-columns: 1fr auto; align-items: end; } }
-.voices-grid { display: grid; gap: 1.2rem; }
-.voice-card {
-  position: relative; display: flex; flex-direction: column; justify-content: space-between; gap: 2rem;
-  padding: clamp(1.6rem, 3vw, 2.4rem); border-top: 2px solid var(--ink); background: var(--paper-2);
-}
-.voice-card blockquote p {
-  font-family: var(--serif); font-weight: 360; font-size: clamp(1.4rem, 1.1rem + .9vw, 1.8rem); line-height: 1.22; letter-spacing: -0.012em;
-}
-.voice-card blockquote p::before { content: "“"; display: block; font-size: 3.4rem; line-height: .6; height: .45em; color: var(--accent); }
-.voice-card figcaption { font-size: .88rem; color: var(--ink-mute); }
-.voice-card figcaption strong { display: block; color: var(--ink); font-weight: 600; }
-.voice-stamp { position: absolute; top: 1.2rem; right: 1.2rem; }
-@media (min-width: 960px) {
-  .voices-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .voice-card:nth-child(2) { margin-top: 3rem; }
-}
-
 /* ---------- 09 equipo ---------- */
 .team { background: var(--paper); }
 .team-head { display: grid; gap: 1.4rem; margin-bottom: clamp(2.5rem, 5vw, 4rem); }

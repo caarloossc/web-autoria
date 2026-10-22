@@ -35,11 +35,7 @@
     const c = data.contacto || {};
     $$("[data-contacto]").forEach((a) => {
       const k = a.dataset.contacto;
-      if (k === "whatsapp" && c.whatsapp) {
-        a.href = "https://wa.me/" + String(c.whatsapp).replace(/\D/g, "");
-        a.textContent = c.whatsappTexto || ("+" + c.whatsapp);
-        a.target = "_blank"; a.rel = "noopener";
-      } else if (k === "email" && c.email) {
+      if (k === "email" && c.email) {
         a.href = "mailto:" + c.email; a.textContent = c.email;
       } else if (k === "linkedin" && c.linkedin) {
         a.href = c.linkedin; a.textContent = "Autoría en LinkedIn"; a.target = "_blank"; a.rel = "noopener";
@@ -371,7 +367,7 @@
         say("Recibido, " + payload.nombre.split(/\s+/)[0] + ". Te escribimos muy pronto.", "ok");
       } else {
         const c = data.contacto || {};
-        const alt = c.email ? " Escríbenos a " + c.email + "." : (c.whatsappTexto ? " Escríbenos por WhatsApp al " + c.whatsappTexto + "." : "");
+        const alt = c.email ? " Escríbenos a " + c.email + "." : "";
         say("No hemos podido enviarlo ahora mismo. Inténtalo de nuevo en un momento." + alt, "error");
       }
     });
