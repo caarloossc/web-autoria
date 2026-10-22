@@ -12,44 +12,35 @@ Las direcciones son las mismas que en Vercel:
 
 ## 1. Preparar el sitio en Hostinger
 
-En el hPanel actual, estas opciones no están en el menú general, sino **dentro del panel de cada sitio**:
+**Dónde va Autoría.** Usa un sitio **PHP/HTML** propio. Para crearlo, entra en **Sitios web → Crear sitio web** y elige un sitio vacío PHP/HTML; no elijas WordPress ni el Creador con IA. Hostinger le da un dominio temporal (`…hostingersite.com`) hasta que conectéis uno propio.
 
-- Entra en **Sitios web** y abre el sitio: pulsa en su fila o en el botón **⋮** de la derecha. No pulses en el nombre con la flechita, porque eso abre la web. En algunas cuentas hay un botón **Panel** o **Administrar** (en inglés, *Dashboard*).
-- A la izquierda aparece una barra lateral con un **buscador**. Escribe «PHP», «SSL» o «Git» y te lleva a cada opción.
+**No uses la carpeta de la web de la empresa**, porque la borrarías. Si preferís un subdominio de la empresa, como `autoria.eryoncompany.com`, créalo en el menú del sitio de la empresa, en **Dominios**. Hostinger le da su propia carpeta, normalmente `public_html/autoria`; apúntala, porque la necesitas en el paso 2.
 
-**Antes de nada: dónde va Autoría.** Si en el plan ya está la web de la empresa, **no uses su carpeta**: la borrarías. Elige una de estas dos opciones:
+**Cómo entrar en el sitio.** El menú de la izquierda de hPanel (Inicio, Agente, Sitios web…) es el general y no tiene estas opciones. Hay que entrar en el sitio:
 
-- **Un subdominio**, por ejemplo `autoria.dominio-de-la-empresa.com`.
-  1. En el panel de la web de la empresa, entra en **Dominios → Subdominios** (o busca «Subdominios») y crea `autoria`.
-  2. Hostinger le da su propia carpeta, normalmente `public_html/autoria`. Apúntala: la necesitas en el paso 2.
-- **Un sitio nuevo con otro dominio.**
-  1. Entra en **Sitios web → Añadir sitio web**.
-  2. Elige el sitio **vacío** o **PHP/HTML personalizado**. No elijas WordPress ni el creador de webs con IA.
+1. En **Sitios web**, pasa el ratón por la fila del sitio y pulsa **Administrar sitio web**.
+2. El menú de la izquierda cambia al del sitio: Panel, Plan de hosting, Rendimiento, Análisis, Seguridad, Dominios, Sitio web, Archivos, Bases de datos y **Avanzado**. Arriba tiene un **buscador**.
 
-Después:
+**Qué comprobar:**
 
-1. **PHP:** en la barra lateral, abre **Configuración de PHP**. Debe poner **8.2 o superior**; lo normal es que ya esté en 8.3. Si ya cumple, no cambies nada: la versión se aplica a todas las webs del plan, también a la de la empresa.
-2. **SSL:** abre **Seguridad → SSL** y elige el dominio o subdominio de Autoría. Si no tiene el certificado activo, pulsa **Instalar SSL**; luego activa **Forzar HTTPS**. El dominio tiene que apuntar ya a Hostinger.
+1. **PHP:** en **Avanzado → Configuración de PHP**, pestaña **Versión PHP**, tiene que estar marcada la **8.2 o superior**. Lo normal es que ya esté en la **8.3**, y entonces no hay que tocar nada.
+2. **SSL:** no hace falta tocar nada. Con el dominio temporal ya viene activado: la web abre con `https://` y redirige sola. Cuando conectéis un dominio propio con **Conectar dominio**, Hostinger pone el certificado. Comprueba que la web abre con `https://`.
 
-**Si aun así no aparecen esas opciones:**
-
-- **No hay «Configuración de PHP» y solo puedes editar la web con un editor visual:** el plan es del creador de webs (Website Builder u Horizons) y no admite PHP. En ese caso, la web se queda en Vercel.
-- **El panel es de un servidor VPS** y no tiene «Sitios web»: la instalación es distinta. Pásame una captura.
-- **No aparece «Git»:** algunos planes, como los de agencia, no lo tienen. Usa la opción B del paso 2.
+**Si no aparece «Configuración de PHP» en Avanzado,** el sitio es del Creador con IA y no admite PHP: crea uno PHP/HTML como se explica arriba.
 
 ## 2. Subir la web
 
 **Opción A — desde GitHub (recomendada: cada cambio se publica solo)**
 
-1. En el panel del sitio, abre **Avanzado → Git** o busca «Git».
-2. Pulsa **Conectar con GitHub** (*Connect with GitHub*). Se abre una ventana de GitHub para instalar la aplicación de Hostinger: dale acceso solo al repositorio `caarloossc/web-autoria`.
-3. Elige el repositorio `web-autoria` y la rama `main`.
+1. En el menú del sitio, abre **Avanzado → GIT**.
+2. Pulsa **Continúa con GitHub**. Se abre una ventana de GitHub para instalar la aplicación de Hostinger. Elige **Only select repositories** y marca solo `caarloossc/web-autoria`.
+3. De vuelta en Hostinger, elige el repositorio `web-autoria` y la rama `main`.
 4. **Directorio de despliegue:**
    - **Sitio propio:** deja `public_html`.
-   - **Subdominio:** pulsa **Cambiar** y elige la carpeta del subdominio, por ejemplo `public_html/autoria`. **Nunca** el `public_html` de la web de la empresa: Hostinger sustituye los archivos de esa carpeta.
+   - **Subdominio:** pulsa **Cambiar** y elige la carpeta del subdominio, por ejemplo `public_html/autoria`. **Nunca** elijas el `public_html` de la web de la empresa: Hostinger sustituye los archivos de esa carpeta.
 5. Pulsa **Desplegar**. A partir de ahí, cada cambio que se suba a GitHub se publica solo.
 
-Si en vez del botón **Conectar con GitHub** ves un formulario para escribir la dirección del repositorio, es el método antiguo:
+Si en vez del botón **Continúa con GitHub** ves un formulario para escribir la dirección del repositorio, es el método antiguo:
 
 1. Borra el archivo `default.php` de la carpeta de destino: tiene que estar vacía.
 2. Rellena el formulario:
