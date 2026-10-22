@@ -15,8 +15,9 @@ function raiz_web() { return dirname(__DIR__); }
 
 /* ---------- carpeta privada ----------
    Configuración (clave de la IA, contraseña del panel) y contactos se guardan
-   FUERA de la carpeta pública (public_html) si se puede; si no, en php/_datos,
-   bloqueada con .htaccess. */
+   FUERA de la carpeta pública (public_html) si se puede; si no, en php/_datos.
+   Siempre se bloquea con .htaccess: si la web está en un subdominio dentro del
+   public_html de otra web, la carpeta de al lado sigue siendo pública. */
 function dir_privado() {
   static $dir = null;
   if ($dir !== null) return $dir;
@@ -25,7 +26,7 @@ function dir_privado() {
   foreach ($candidatos as $c) {
     if (!is_dir($c)) @mkdir($c, 0750, true);
     if (is_dir($c) && is_writable($c)) {
-      if (strpos($c, raiz_web()) === 0 && !is_file($c . '/.htaccess')) {
+      if (!is_file($c . '/.htaccess')) {
         @file_put_contents($c . '/.htaccess', "<IfModule mod_authz_core.c>\n  Require all denied\n</IfModule>\n<IfModule !mod_authz_core.c>\n  Order allow,deny\n  Deny from all\n</IfModule>\n");
         @file_put_contents($c . '/index.php', "<?php http_response_code(404);\n");
       }
