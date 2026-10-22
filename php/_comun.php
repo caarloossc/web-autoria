@@ -1,0 +1,229 @@
+<?php
+// _comun.php — utilidades compartidas por la versión PHP (Hostinger) de los
+// servicios de Autoría. Equivale a api/_comun.js de la versión de Vercel.
+// No se puede abrir desde el navegador.
+if (!defined('AUTORIA')) { http_response_code(404); exit; }
+
+mb_internal_encoding('UTF-8');
+date_default_timezone_set('Europe/Madrid');
+
+// Modelos de Gemini en orden de preferencia (si uno falla o está saturado, se prueba el siguiente).
+const MODELOS_CHAT    = ['gemini-flash-lite-latest', 'gemini-3.5-flash-lite', 'gemini-3.5-flash'];
+const MODELOS_LECTURA = ['gemini-3.5-flash', 'gemini-flash-lite-latest', 'gemini-3.5-flash-lite'];
+
+function raiz_web() { return dirname(__DIR__); }
+
+/* ---------- carpeta privada ----------
+   Configuración (clave de la IA, contraseña del panel) y contactos se guardan
+   FUERA de la carpeta pública (public_html) si se puede; si no, en php/_datos,
+   bloqueada con .htaccess. */
+function dir_privado() {
+  static $dir = null;
+  if ($dir !== null) return $dir;
+  $env = getenv('AUTORIA_PRIVADO');
+  $candidatos = $env ? [$env] : [dirname(raiz_web()) . '/autoria-privado', __DIR__ . '/_datos'];
+  foreach ($candidatos as $c) {
+    if (!is_dir($c)) @mkdir($c, 0750, true);
+    if (is_dir($c) && is_writable($c)) {
+      if (strpos($c, raiz_web()) === 0 && !is_file($c . '/.htaccess')) {
+        @file_put_contents($c . '/.htaccess', "<IfModule mod_authz_core.c>\n  Require all denied\n</IfModule>\n<IfModule !mod_authz_core.c>\n  Order allow,deny\n  Deny from all\n</IfModule>\n");
+        @file_put_contents($c . '/index.php', "<?php http_response_code(404);\n");
+      }
+      return $dir = $c;
+    }
+  }
+  return $dir = '';
+}
+
+function config() {
+  static $cfg = null;
+  if ($cfg !== null) return $cfg;
+  $cfg = ['gemini_api_key' => '', 'panel_hash' => '', 'aviso_email' => ''];
+  $f = dir_privado() ? dir_privado() . '/config.php' : '';
+  if ($f && is_file($f)) { $c = @include $f; if (is_array($c)) $cfg = array_merge($cfg, $c); }
+  return $cfg;
+}
+
+function guardar_config(array $nueva) {
+  $dir = dir_privado();
+  if ($dir === '') return false;
+  $c = array_merge(config(), $nueva);
+  $php = "<?php\n// Configuración privada de Autoría (generada por la página de instalación).\nreturn " . var_export($c, true) . ";\n";
+  $ok = @file_put_contents($dir . '/config.php', $php, LOCK_EX) !== false;
+  if ($ok) @chmod($dir . '/config.php', 0640);
+  return $ok;
+}
+
+/* ---------- respuestas ---------- */
+function json_out($arr, $code = 200) {
+  http_response_code($code);
+  header('Content-Type: application/json; charset=utf-8');
+  header('X-Content-Type-Options: nosniff');
+  header('Cache-Control: no-store');
+  echo json_encode($arr, JSON_UNESCAPED_UNICODE);
+  exit;
+}
+
+// Solo peticiones desde la propia web (evita que otras webs gasten la cuota).
+function misma_web() {
+  $host = strtolower(preg_replace('/:\d+$/', '', $_SERVER['HTTP_HOST'] ?? ''));
+  $src  = $_SERVER['HTTP_ORIGIN'] ?? ($_SERVER['HTTP_REFERER'] ?? '');
+  if ($src === '') return true;
+  return strtolower((string) parse_url($src, PHP_URL_HOST)) === $host;
+}
+
+function solo_post() {
+  if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') json_out(['ok' => false, 'reason' => 'metodo'], 405);
+  if (!misma_web()) json_out(['ok' => false, 'reason' => 'origin'], 403);
+}
+
+function entrada_json() {
+  $in = json_decode((string) file_get_contents('php://input'), true, 512, JSON_INVALID_UTF8_SUBSTITUTE);
+  return is_array($in) ? $in : [];
+}
+
+/* ---------- textos ---------- */
+function clean_str($v, $max = 300) {
+  if ($v === null || is_array($v) || is_object($v)) return '';
+  $v = trim(preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', (string) $v));
+  return mb_substr($v, 0, $max);
+}
+function str_or_null($v, $max = 300) {
+  $s = clean_str($v, $max);
+  return ($s === '' || strtolower($s) === 'null') ? null : $s;
+}
+function es_email($s) { return (bool) preg_match('/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/', $s) && mb_strlen($s) <= 160; }
+function nuevo_id() { return gmdate('ymd-His') . '-' . bin2hex(random_bytes(3)); }
+function ahora() { return gmdate('Y-m-d\TH:i:s.000\Z'); }
+
+// Lee un texto (indicaciones de la IA, base de conocimiento) de los archivos de
+// api/ para que Vercel y Hostinger usen exactamente los mismos.
+function texto_js($archivo, $nombre) {
+  static $cache = [];
+  $f = raiz_web() . '/api/' . $archivo;
+  if (!isset($cache[$f])) $cache[$f] = is_file($f) ? (string) file_get_contents($f) : '';
+  $s = $cache[$f];
+  $marca = $nombre === 'default' ? 'export default `' : 'const ' . $nombre . ' = `';
+  $i = strpos($s, $marca);
+  if ($i === false) return '';
+  $i += strlen($marca);
+  $j = strpos($s, '`;', $i);
+  return $j === false ? '' : substr($s, $i, $j - $i);
+}
+
+/* ---------- límites de uso ----------
+   Por IP (minuto y día) y tope global diario que protege la cuota de la IA.
+   Devuelve null si se puede seguir, o 'min' | 'day' | 'global'. */
+function rate_limit($bucket, $perMin, $perDay, $globalDay) {
+  $tmp = sys_get_temp_dir();
+  $now = time();
+  $h = substr(hash('sha256', 'autoria:' . ($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0')), 0, 24);
+  $fIp = "$tmp/autoria_{$bucket}_$h.json";
+  $stamps = is_file($fIp) ? json_decode((string) @file_get_contents($fIp), true) : [];
+  if (!is_array($stamps)) $stamps = [];
+  $stamps = array_values(array_filter($stamps, function ($t) use ($now) { return $t > $now - 86400; }));
+  $min = count(array_filter($stamps, function ($t) use ($now) { return $t > $now - 60; }));
+  $fG = "$tmp/autoria_{$bucket}_global_" . date('Ymd') . '.txt';
+  $g = is_file($fG) ? (int) @file_get_contents($fG) : 0;
+  $stamps[] = $now;
+  @file_put_contents($fIp, json_encode(array_slice($stamps, -300)), LOCK_EX);
+  @file_put_contents($fG, (string) ($g + 1), LOCK_EX);
+  if ($min + 1 > $perMin) return 'min';
+  if (count($stamps) > $perDay) return 'day';
+  if ($g + 1 > $globalDay) return 'global';
+  return null;
+}
+
+/* ---------- Google Gemini ---------- */
+function gemini_key() {
+  $k = trim((string) (config()['gemini_api_key'] ?? ''));
+  return preg_match('/^[A-Za-z0-9._-]{20,}$/', $k) ? $k : '';
+}
+
+// Llama a Gemini probando los modelos en orden. Pide el mínimo «razonamiento»
+// (respuestas rápidas); si un modelo no admite ese ajuste, repite sin él.
+function gemini_call(array $models, array $payload, $timeoutMs = 25000, $deadlineMs = 52000) {
+  $key = gemini_key();
+  if ($key === '') return ['', 'sin_clave'];
+  if (!function_exists('curl_init')) return ['', 'sin_curl'];
+  $start = microtime(true);
+  $lastErr = '';
+  foreach ($models as $model) {
+    foreach ([true, false] as $thinking) {
+      $left = $deadlineMs - (microtime(true) - $start) * 1000;
+      if ($left < 3000) break 2;
+      $body = $payload;
+      if (!isset($body['generationConfig'])) $body['generationConfig'] = [];
+      unset($body['generationConfig']['thinkingConfig']);
+      if ($thinking) $body['generationConfig']['thinkingConfig'] = ['thinkingLevel' => 'minimal'];
+      $ch = curl_init('https://generativelanguage.googleapis.com/v1beta/models/' . rawurlencode($model) . ':generateContent');
+      curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST           => true,
+        CURLOPT_HTTPHEADER     => ['Content-Type: application/json', 'x-goog-api-key: ' . $key],
+        CURLOPT_POSTFIELDS     => json_encode($body, JSON_UNESCAPED_UNICODE),
+        CURLOPT_TIMEOUT_MS     => (int) min($timeoutMs, $left),
+        CURLOPT_CONNECTTIMEOUT => 10,
+      ]);
+      $raw = curl_exec($ch);
+      $code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+      $err = curl_error($ch);
+      curl_close($ch);
+      if ($raw === false || $code >= 400) {
+        $lastErr = "$model http $code $err " . substr((string) $raw, 0, 200);
+        if ($thinking && $code === 400) continue;   // no admite el ajuste: repetir sin él
+        break;                                      // saturado, retirado, etc.: siguiente modelo
+      }
+      $data = json_decode($raw, true);
+      $text = '';
+      foreach (($data['candidates'][0]['content']['parts'] ?? []) as $p) {
+        if (isset($p['text']) && empty($p['thought'])) $text .= $p['text'];
+      }
+      if (trim($text) !== '') return [$text, ''];
+      $lastErr = "$model vacío (" . ($data['promptFeedback']['blockReason'] ?? ($data['candidates'][0]['finishReason'] ?? '?')) . ')';
+      break;
+    }
+  }
+  @error_log('[autoria-ia] ' . $lastErr);
+  return ['', $lastErr ?: 'ia'];
+}
+
+function extract_json($s) {
+  $s = trim(preg_replace('/```$/', '', trim(preg_replace('/^```(?:json)?/i', '', trim((string) $s)))));
+  $a = strpos($s, '{'); $b = strrpos($s, '}');
+  if ($a === false || $b === false || $b < $a) return null;
+  $d = json_decode(substr($s, $a, $b - $a + 1), true);
+  return is_array($d) ? $d : null;
+}
+
+/* ---------- contactos ---------- */
+function store_record(array $row) {
+  $dir = dir_privado();
+  if ($dir === '') { @error_log('[autoria-registro-no-guardado] ' . json_encode($row, JSON_UNESCAPED_UNICODE)); return false; }
+  return @file_put_contents($dir . '/contactos.jsonl', json_encode($row, JSON_UNESCAPED_UNICODE) . "\n", FILE_APPEND | LOCK_EX) !== false;
+}
+
+function read_records() {
+  $f = dir_privado() . '/contactos.jsonl';
+  if (!is_file($f)) return [];
+  $out = [];
+  foreach (file($f, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+    $r = json_decode($line, true);
+    if (is_array($r)) $out[] = $r;
+  }
+  return array_reverse($out);   // los más recientes primero
+}
+
+// Aviso por email al equipo (opcional: solo si se configuró un email en la instalación).
+function notify_team($asunto, array $row) {
+  $to = config()['aviso_email'] ?? '';
+  if (!$to || !filter_var($to, FILTER_VALIDATE_EMAIL) || !function_exists('mail')) return false;
+  $texto = '';
+  foreach ($row as $k => $v) {
+    if (is_array($v)) $v = json_encode($v, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    $texto .= str_pad($k, 16) . ': ' . ($v === null || $v === '' ? '—' : $v) . "\n";
+  }
+  $host = preg_replace('/[^a-z0-9.\-]/i', '', preg_replace('/^www\./', '', $_SERVER['HTTP_HOST'] ?? 'autoria'));
+  $cab = 'From: Autoria <no-reply@' . $host . ">\r\nContent-Type: text/plain; charset=utf-8";
+  return @mail($to, '=?UTF-8?B?' . base64_encode($asunto) . '?=', $texto, $cab);
+}
